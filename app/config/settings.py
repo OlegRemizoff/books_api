@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd party apps
-
+    'rest_framework',
 
     #Locale
-    'store.apps.StoreConfig'
+    'store.apps.StoreConfig',
 ]
 
 MIDDLEWARE = [

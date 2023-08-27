@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # 3rd party apps
     'rest_framework',
     'django_filters',
+    'social_django',
 
     #Locale
     'store.apps.StoreConfig',
@@ -70,6 +71,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -137,3 +141,15 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# OAuth 
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+
+)
+
+SOCIAL_AUTH_GITHUB_KEY = '05c144a0f453dde56a1c'
+SOCIAL_AUTH_GITHUB_SECRET = 'd4d623f9001db9667766f562ae00398d45b4ed17'

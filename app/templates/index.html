@@ -6,6 +6,16 @@
     <title>Home</title>
 </head>
 <body>
-    <h3>Sign in <a href="{% url 'social:begin' 'github' %}">Github</a></h3>
+    {% if user.is_authenticated %}
+        <h3>Welcome {{ user.username }} !!!</h3>
+        <br /><br />
+    <h3><a href="{% url 'logout' %}">Logout</a></h3>
+    {% else %}
+        <h3>Login <a href="{% url 'social:begin' 'github' %}">Github</a></h3>
+    {% endif %}
+</div>
+
+    <h3><a href="{% url 'book-list' %}">Book</a></h3>
+
 </body>
 </html>

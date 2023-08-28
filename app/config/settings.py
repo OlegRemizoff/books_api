@@ -145,9 +145,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # OAuth 
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
+LOGIN_REDIRECT_URL = 'home'
+
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
 
 )
 

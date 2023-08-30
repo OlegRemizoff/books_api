@@ -10,7 +10,7 @@ from .serializers import BooksSerializer
 class BookViewSet(ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BooksSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['name', 'price', 'author']
     search_fields = ['name', 'price', 'author']

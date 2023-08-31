@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 from django.urls import reverse
 from django.contrib.auth.models import User
-from store.models import Book
+from store.models import Book, UserBookRelation
 from store.serializers import BooksSerializer
 import json
 
@@ -19,7 +19,7 @@ class BooksApiTestCase(APITestCase):
 
 
     def test_get(self):
-        # url = reverse('book-list') # смотреть в роутерах URL Name
+        # url = reverse('book-list') # смотреть в роутерах URL Name или в шаблоне при запуске сервера
         url = '/book/'  # 'http://127.0.0.1:8000/book/'
         response = self.client.get(url)
         serializer_data  = BooksSerializer([self.book_1, self.book_2, self.book_3], many=True).data
@@ -146,3 +146,69 @@ class BooksApiTestCase(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(2, Book.objects.all().count())
+
+
+class BooksRelationTestCase(APITestCase):
+# ./manage.py test store.tests.test_api.BooksRelationTestCase.test_like
+    def setUp(self):
+        self.user1 = User.objects.create(username='test_user1', is_staff=True)
+        self.user2 = User.objects.create(username='test_user2')
+        self.book_1 = Book.objects.create(name='Harry Potter', price=1000.00, 
+                                          author='J. K. Rowling', owner=self.user1)
+        self.book_2 = Book.objects.create(name='The Witcher', price=700.00, author='Andrzej Sapkowski')
+
+    def test_like(self):
+        url = reverse('userbookrelation-detail', args=(self.book_1.id, ))
+        data = {
+            "like": True,
+
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user1)
+        response = self.client.patch(url, data=json_data, content_type="application/json")
+        relation = UserBookRelation.objects.get(user=self.user1, book=self.book_1)
+
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertTrue(relation.like)
+
+        data = {
+            "in_bookmarks": True,
+
+        }
+        json_data = json.dumps(data)
+        response = self.client.patch(url, data=json_data, content_type="application/json")
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        relation = UserBookRelation.objects.get(user=self.user1, book=self.book_1)
+        self.assertTrue(relation.in_bookmarks)
+
+
+    def test_rate(self):
+        url = reverse('userbookrelation-detail', args=(self.book_1.id, ))
+        data = {
+            "rate": 3,
+
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user1)
+        response = self.client.patch(url, data=json_data, content_type="application/json")
+        relation = UserBookRelation.objects.get(user=self.user1, book=self.book_1)
+
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(3, relation.rate)
+
+
+    def test_rate_wrong(self):
+        url = reverse('userbookrelation-detail', args=(self.book_1.id, ))
+        data = {
+            "rate": 6,
+
+        }
+        json_data = json.dumps(data)
+        self.client.force_login(self.user1)
+        response = self.client.patch(url, data=json_data, content_type="application/json")
+        relation = UserBookRelation.objects.get(user=self.user1, book=self.book_1)
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code, response.data)
+        # AssertionError: 200 != 400 : {'rate': [ErrorDetail(string='Значения 6 нет среди допустимых вариантов.', code='invalid_choice')]}

@@ -6,11 +6,19 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
+from django.db.models.aggregates import Count
+from django.db.models import Case, When
 from .models import Book, UserBookRelation
 from .serializers import BooksSerializer, UserBookRelationSerializer
 
 class BookViewSet(ModelViewSet):
-    queryset = Book.objects.all()
+    queryset =books = Book.objects.all().annotate(
+        annotated_likes=Count(
+            Case(
+                When(
+                    userbookrelation__like=True, then=1)
+                    )))
+        
     serializer_class = BooksSerializer
     permission_classes = [IsOwnerOrStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]

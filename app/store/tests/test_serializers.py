@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.db.models.aggregates import Count
+from django.db.models import Case, When
 from store.serializers import BooksSerializer
 from store.models import Book, UserBookRelation
 
@@ -29,7 +31,10 @@ class BookSerializerTestCase(TestCase):
 
     def test_ok(self):
 
-        data = BooksSerializer([self.book_1, self.book_2, self.book_3], many=True).data
+        books = Book.objects.all().annotate(annotated_likes=Count(Case(When(
+            userbookrelation__like=True, then=1
+        )))).order_by('id')
+        data = BooksSerializer(books, many=True).data
         expected_result = [
             {
                 "id": self.book_1.id,
@@ -37,6 +42,7 @@ class BookSerializerTestCase(TestCase):
                 "price": "1000.00",
                 'author': self.user1.username,
                 'likes_count': 3,
+                'annotated_likes': 3,
             },
             {
                 "id": self.book_2.id,
@@ -44,6 +50,7 @@ class BookSerializerTestCase(TestCase):
                 "price": "700.00",
                 'author': self.user2.username,
                 'likes_count': 2,
+                'annotated_likes': 2,
             },
                         {
                 "id": self.book_3.id,
@@ -51,12 +58,13 @@ class BookSerializerTestCase(TestCase):
                 "price": "900.00",
                 'author': self.user3.username,
                 'likes_count': 0,
+                'annotated_likes': 0,
             }
         ]
 
-        print(expected_result)
-        print('================')
-        print(data)
+        # print(expected_result)
+        # print('================')
+        # print(data)
         self.assertEqual(expected_result, data)
 
 

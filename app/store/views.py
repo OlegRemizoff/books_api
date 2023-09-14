@@ -6,18 +6,16 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from django.db.models.aggregates import Count
+from django.db.models.aggregates import Count, Avg
 from django.db.models import Case, When
 from .models import Book, UserBookRelation
 from .serializers import BooksSerializer, UserBookRelationSerializer
 
 class BookViewSet(ModelViewSet):
-    queryset =books = Book.objects.all().annotate(
-        annotated_likes=Count(
-            Case(
-                When(
-                    userbookrelation__like=True, then=1)
-                    )))
+    queryset = Book.objects.all().annotate(
+            annotated_likes=Count(Case(When(userbookrelation__like=True, then=1))),
+            rating=Avg('userbookrelation__rate')
+            ).order_by('id')
         
     serializer_class = BooksSerializer
     permission_classes = [IsOwnerOrStaffOrReadOnly]

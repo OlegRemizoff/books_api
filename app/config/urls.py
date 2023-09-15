@@ -25,6 +25,7 @@ router.register(r'book_relation', UserBookRelationView,)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("__debug__/", include("debug_toolbar.urls")),
     path('', include('social_django.urls', namespace='social')),
     path('', home, name='home'),
     path('logout/', logut_view, name='logout')

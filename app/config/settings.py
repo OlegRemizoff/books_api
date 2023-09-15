@@ -43,12 +43,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'social_django',
+    "debug_toolbar",
 
     #Locale
     'store.apps.StoreConfig',
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -157,3 +160,10 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_GITHUB_KEY = '05c144a0f453dde56a1c'
 SOCIAL_AUTH_GITHUB_SECRET = 'd4d623f9001db9667766f562ae00398d45b4ed17'
+
+
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+
+]

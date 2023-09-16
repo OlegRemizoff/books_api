@@ -15,9 +15,9 @@ class BookSerializerTestCase(TestCase):
         self.user3 = User.objects.create(username='user3')
 
         self.book_1 = Book.objects.create(name='Harry Potter', price=1000.00, 
-                                          author=self.user1)
+                                          author=self.user1, owner=self.user1)
         self.book_2 = Book.objects.create(name='The Witcher', price=700.00,
-                                          author=self.user2)
+                                          author=self.user2, owner=self.user2)
         self.book_3 = Book.objects.create(name='The lord of the rings', price=900.00, 
                                           author=self.user3)
 
@@ -42,28 +42,31 @@ class BookSerializerTestCase(TestCase):
                 "id": self.book_1.id,
                 "name": "Harry Potter",
                 "price": "1000.00",
-                'author': self.user1.username,
-                # 'likes_count': 3,
+                'author': self.user1.username,     
                 'annotated_likes': 3,
                 'rating': '4.67',
+                'owner_name': 'user1',
+                # 'likes_count': 3,
             },
             {
                 "id": self.book_2.id,
                 "name": "The Witcher",
                 "price": "700.00",
                 'author': self.user2.username,
-                # 'likes_count': 2,
                 'annotated_likes': 2,
                 'rating': '3.50',
+                'owner_name': 'user2',
+                # 'likes_count': 2,
             },
                         {
                 "id": self.book_3.id,
                 "name": "The lord of the rings",
                 "price": "900.00",
                 'author': self.user3.username,
-                # 'likes_count': 0,
                 'annotated_likes': 0,
                 'rating': None,
+                'owner_name': '',
+                # 'likes_count': 0,
             }
         ]
 
@@ -71,5 +74,4 @@ class BookSerializerTestCase(TestCase):
         # print('================')
         # print(data)
         self.assertEqual(expected_result, data)
-
 

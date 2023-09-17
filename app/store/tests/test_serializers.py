@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Count, Avg
 from django.db.models import Case, When
-from store.serializers import BooksSerializer
+from store.serializers import BooksSerializer, BookReaderSerializer
 from store.models import Book, UserBookRelation
 
 
@@ -10,9 +10,9 @@ from store.models import Book, UserBookRelation
 class BookSerializerTestCase(TestCase):
     # ./manage.py test store.tests.test_serializers.BookSerializerTestCase
     def setUp(self):
-        self.user1 = User.objects.create(username='user1')
-        self.user2 = User.objects.create(username='user2')
-        self.user3 = User.objects.create(username='user3')
+        self.user1 = User.objects.create(username='user1', first_name='Ivan', last_name='Ivanov')
+        self.user2 = User.objects.create(username='user2', first_name='Petr', last_name='Petrov')
+        self.user3 = User.objects.create(username='user3', first_name='1', last_name='2')
 
         self.book_1 = Book.objects.create(name='Harry Potter', price=1000.00, 
                                           author=self.user1, owner=self.user1)
@@ -42,30 +42,61 @@ class BookSerializerTestCase(TestCase):
                 "id": self.book_1.id,
                 "name": "Harry Potter",
                 "price": "1000.00",
-                'author': self.user1.username,     
+                'author': 'user1',     
                 'annotated_likes': 3,
                 'rating': '4.67',
                 'owner_name': 'user1',
+                'readers': [
+                    {
+                        'first_name': 'Ivan',
+                        'last_name': 'Ivanov'
+                    },
+                    {
+                        'first_name': 'Petr',
+                        'last_name': 'Petrov'
+                    },
+                    {
+                        'first_name': '1',
+                        'last_name': '2'
+                    }
+                ]   
+
                 # 'likes_count': 3,
             },
             {
                 "id": self.book_2.id,
                 "name": "The Witcher",
                 "price": "700.00",
-                'author': self.user2.username,
+                'author': 'user2',
                 'annotated_likes': 2,
                 'rating': '3.50',
                 'owner_name': 'user2',
+                'readers': [
+                    {
+                        'first_name': 'Ivan',
+                        'last_name': 'Ivanov'
+                    },
+                    {
+                        'first_name': 'Petr',
+                        'last_name': 'Petrov'
+                    },
+                    {
+                        'first_name': '1',
+                        'last_name': '2'
+                    }
+                ]   
                 # 'likes_count': 2,
             },
-                        {
+            {
                 "id": self.book_3.id,
                 "name": "The lord of the rings",
                 "price": "900.00",
-                'author': self.user3.username,
+                'author': 'user3',
                 'annotated_likes': 0,
                 'rating': None,
-                'owner_name': '',
+                'owner_name': '', 
+                'readers': []
+                
                 # 'likes_count': 0,
             }
         ]

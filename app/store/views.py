@@ -15,10 +15,22 @@ class BookViewSet(ModelViewSet):
     queryset = Book.objects.all().annotate(
             annotated_likes=Count(Case(When(userbookrelation__like=True, then=1))),
             rating=Avg('userbookrelation__rate')
-            ).select_related('owner').order_by('id') # select_related делает дополнительный join в нашу выборку 
-            # FROM "store_book
-            # LEFT OUTER JOIN "auth_user" ON ("store_book"."owner_id" = "auth_user"."id")
-        
+            ).select_related('owner').prefetch_related('readers').order_by('id') 
+    # select_related делает дополнительный join в нашу выборку 
+    # FROM "store_book
+    # LEFT OUTER JOIN "auth_user" ON ("store_book"."owner_id" = "auth_user"."id")
+    
+    # FROM "auth_user"
+    # INNER JOIN "store_userbookrelation" ON ("auth_user"."id" = "store_userbookrelation"."user_id")
+    # WHERE "store_userbookrelation"."book_id" = '1'
+    # WHERE "store_userbookrelation"."book_id" = '2' и т.д
+    # prefetch_related('readers') вместо 5-ти отдельных запросов получим один
+    # WHERE "store_userbookrelation"."book_id" IN ('1', '2', '3', '4', '5') 
+
+
+
+    # WHERE "store_userbookrelation"."book_id" IN ('1', '2', '3', '4', '5')
+
     serializer_class = BooksSerializer
     permission_classes = [IsOwnerOrStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]

@@ -15,11 +15,11 @@ class BookSerializerTestCase(TestCase):
         self.user3 = User.objects.create(username='user3', first_name='1', last_name='2')
 
         self.book_1 = Book.objects.create(name='Harry Potter', price=1000.00, 
-                                          author=self.user1, owner=self.user1)
+                                          author=self.user1.username, owner=self.user1)
         self.book_2 = Book.objects.create(name='The Witcher', price=700.00,
-                                          author=self.user2, owner=self.user2)
+                                          author=self.user2.username, owner=self.user2)
         self.book_3 = Book.objects.create(name='The lord of the rings', price=900.00, 
-                                          author=self.user3)
+                                          author=self.user3.username)
 
         # Лайкаем и оцениваем
         UserBookRelation.objects.create(user=self.user1, book=self.book_1, like=True, rate=5)
@@ -34,7 +34,7 @@ class BookSerializerTestCase(TestCase):
 
         books = Book.objects.all().annotate(
             annotated_likes=Count(Case(When(userbookrelation__like=True, then=1))),
-            rating=Avg('userbookrelation__rate')
+            # rating=Avg('userbookrelation__rate')
             ).order_by('id')
         data = BooksSerializer(books, many=True).data
         expected_result = [

@@ -14,7 +14,7 @@ from .serializers import BooksSerializer, UserBookRelationSerializer
 class BookViewSet(ModelViewSet):
     queryset = Book.objects.all().annotate(
             annotated_likes=Count(Case(When(userbookrelation__like=True, then=1))),
-            rating=Avg('userbookrelation__rate')
+            # rating=Avg('userbookrelation__rate') old
             ).select_related('owner').prefetch_related('readers').order_by('id') 
     # select_related делает дополнительный join в нашу выборку 
     # FROM "store_book
@@ -29,7 +29,7 @@ class BookViewSet(ModelViewSet):
 
 
 
-    # WHERE "store_userbookrelation"."book_id" IN ('1', '2', '3', '4', '5')
+
 
     serializer_class = BooksSerializer
     permission_classes = [IsOwnerOrStaffOrReadOnly]

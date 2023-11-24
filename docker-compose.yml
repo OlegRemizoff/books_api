@@ -1,0 +1,58 @@
+version: '3.9'
+
+# docker-compose exec [имя контейнера] python manage.py [команда]
+
+
+services:
+  django:
+    build: .
+    container_name: django
+    command: sh -c "python manage.py makemigrations store && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/usr/src/books_api/
+    ports:
+      - 8000:8000
+    depends_on:
+      - database
+
+
+  database:
+    image: postgres:alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    container_name: pgdb
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+volumes:
+  pgdbdata:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,33 +1,25 @@
 <p align="center">
-    <a href="http://olegrem1zoff.pythonanywhere.com/" target="_blank" rel="noopener noreferrer">
-        <img width="400px" src="logo.png" title="e-shop">
-    </a>
+<img src="logo.jpg">
 </p>
+<!-- <h2 align="center">......</h2> -->
 
-<h2 align="center">Books api</h2>
+## Описание
+Простое API на Django Rest Framework. Присутствует возможность авторизации по профилю github
+
+## Установка
+
+### 1) Перейти в папку с проектом
+
+### 2) Выполнить команду: 
+    docker-compose up --build
+
+### 3) Перейти по адресу
+     http://127.0.0.1:8000/
+---
+
+### Создать администратора
+    docker-compose exec django python manage.py createsuperuser
 
 
-
-
-Простое api на Django REST framework
-
-
-# Установка
-
-### 1) Создать виртуальное окружение
-
-### 2) Установить зависимости
-
-    pip install -r requirements.txt
-
-### 3) Выполнить миграции
-
-    python manage.py migrate    
-
-### 4) Создать суперпользователя
-
-    python manage.py createsuperuser
-
-# Старт
-
-    python manage.py runserver
+###  Тесты
+     docker-compose exec django python manage.py test

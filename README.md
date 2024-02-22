@@ -1,4 +1,4 @@
-# :bookmark_tabs: Exchange Rates
+# :bookmark_tabs: Books
 <p align="center">
 <img src="logo.jpg">
 </p>
